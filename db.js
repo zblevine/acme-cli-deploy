@@ -3,6 +3,14 @@ const { UUID, UUIDV4, STRING } = Sequelize;
 const conn = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/my_db');
 const jwt = require('jwt-simple');
 
+try{
+  Object.assign(process.env, require('./.env'));
+}catch(ex){
+  console.log(ex)
+}
+
+console.log("secret is ----",process.env.SECRET)
+
 const User = conn.define('user', {
   id: {
     type: UUID,
@@ -49,6 +57,7 @@ User.authenticate = function(credentials){
       error.status = 401;
       throw error;
     }
+    console.log(process.env.SECRET)
     return jwt.encode({ id: user.id }, process.env.SECRET);
   });
 }
